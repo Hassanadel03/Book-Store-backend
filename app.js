@@ -88,7 +88,7 @@ app.post('/addbook', async (req, res) => {
 
 
 //edit book info,pdfname (for admin )
-app.patch('/edituser', async (req, res) => {
+app.patch('/editbook', async (req, res) => {
     try {
         //get user object from body 
         const bookName = req.query.bookName;

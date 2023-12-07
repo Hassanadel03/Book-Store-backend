@@ -36,12 +36,20 @@ userRouter.post("/signup", async (req, res) => {
     try {
         const existingUserByName = await User.findOne({ fullName });
         const existingUserByEmail = await User.findOne({ email });
-
+        // Basic email format validation using regex
+        const emailFormatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailFormatRegex.test(email)) {
+            return res.status(400).json({ error: "Invalid email format" });
+        }
         if (existingUserByName) {
             return res.status(400).json({ error: "Username already exists" });
         } else if (existingUserByEmail) {
             return res.status(400).json({ error: "Email already exists" });
         } else {
+            // Check password length
+            if (password.length < 8) {
+                return res.status(400).json({ error: "Password must be at least 8 characters long" });
+            }
             const newUser = {
                 fullName,
                 password,

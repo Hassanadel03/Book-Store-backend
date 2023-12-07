@@ -168,6 +168,39 @@ app.post("/signup", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// edit an existing user password or email
+
+app.put("/editUser", async (req, res) => {
+  const username = req.body.username;
+  const { email, password } = req.body;
+
+  try {
+    // Find the user by username
+    const user = await User.findOne({ fullName: username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update email and/or password
+    if (email) {
+      user.email = email;
+    }
+    if (password) {
+      user.password = password; // In a real-world scenario, you would hash the new password
+    }
+
+    // Save the updated user
+    await user.save();
+
+    res.json({ message: "User updated successfully" });
+  } catch (error) {
+    console.error("Error during user update:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 //starting the app
 mongoose.set("strictQuery", false);
 mongoose

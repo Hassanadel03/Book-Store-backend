@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const User = require("./models/user.model");
 const Book = require("./models/book.model");
+const bcrypt = require('bcrypt');
+
 
 // app service
 const app = express();
@@ -115,10 +117,18 @@ app.post("/login", async (req, res) => {
       const user = await User.findOne({ fullName });
 
       // Check if the user exists and the password matches (replace with proper password hashing)
-      if (user && user.password === password) {
-        res.json({ message: "Login successful" });
+      if (user) {
+        // Compare the provided password with the stored hashed password
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (passwordMatch) {
+          res.json({ message: "Login successful" });
+        } else {
+          res.status(401).json({ error: "Invalid password" });
+        }
       } else {
-        res.status(401).json({ error: "Invalid username or password" });
+        res.status(401).json({ error: "Invalid username " });
+
       }
     } catch (error) {
       console.error("Error during login:", error);

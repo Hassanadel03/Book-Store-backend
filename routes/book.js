@@ -18,20 +18,26 @@ bookRouter.get("/Books", async (req, res) => {
 bookRouter.get("/book/:bookName", async (req, res) => {
     try {
         const bookName = req.params.bookName;
-        const book = await Book.findById(bookName);
+        const book = await Book.findOne({ bookName });
+
+        if (!book) {
+            return res.status(404).json({ message: `Cannot find any book with name ${bookName}` });
+        }
+
         res.status(200).json(book);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
+
 // Delete book (for admin)
 bookRouter.delete("/book/:bookName", async (req, res) => {
     const bookName = req.params.bookName;
     try {
-        const book = await Book.findByIdAndDelete(bookName);
+        const book = await Book.findOneAndDelete({ bookName: bookName });
         if (!book) {
-            return res.status(404).json({ message: `Cannot find any book with ID ${bookName}` });
+            return res.status(404).json({ message: `Cannot find any book with name ${bookName}` });
         }
         res.status(200).json(book);
     } catch (error) {

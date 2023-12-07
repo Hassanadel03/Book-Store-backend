@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
 const bookRoutes = require("./routes/book");
+const cartRoutes = require("./routes/cart");
 
 const app = express();
 
@@ -17,6 +18,9 @@ app.use("/", userRoutes);
 
 // Use the book routes
 app.use("/", bookRoutes);
+
+//use cart routes
+app.use("/cart", cartRoutes);
 
 mongoose.set("strictQuery", false);
 mongoose

@@ -133,25 +133,31 @@ app.post("/login", async (req, res) => {
 app.post("/signup", async (req, res) => {
   const { fullName, password, email } = req.body;
 
-  // Check if username or email is already registered
-  if (users.some((user) => user.fullName === fullName)) {
-    return res.status(400).json({ error: "Username already exists" });
-  } else if (users.some((user) => user.email === email)) {
-    return res.status(400).json({ error: "email already exists" });
-  } else {
-    // Save the user to the in-memory database (replace with database storage)
-    const newUser = {
-      fullName,
-      password,
-      email, // In a real-world scenario, you would hash the password before saving it
-    };
+  try {
+    // Check if username or email is already registered
+    const existingUserByName = await User.findOne({ fullName });
+    const existingUserByEmail = await User.findOne({ email });
 
-    const user = new User(newUser);
-    await user.save();
-    res.send("User added Succefully");
+    if (existingUserByName) {
+      return res.status(400).json({ error: "Username already exists" });
+    } else if (existingUserByEmail) {
+      return res.status(400).json({ error: "Email already exists" });
+    } else {
+      const newUser = {
+        fullName,
+        password,
+        email,
+      };
+
+      const user = new User(newUser);
+      await user.save();
+      res.send("User added successfully");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-
 //starting the app
 mongoose.set("strictQuery", false);
 mongoose

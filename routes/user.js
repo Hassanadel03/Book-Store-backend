@@ -6,10 +6,10 @@ const userRouter = express.Router();
 
 // User Log In
 userRouter.post("/login", async (req, res) => {
-    const { fullName, password } = req.body;
-    if (fullName && password) {
+    const { userName, password } = req.body;
+    if (userName && password) {
         try {
-            const user = await User.findOne({ fullName });
+            const user = await User.findOne({ userName });
             if (user) {
                 const passwordMatch = await bcrypt.compare(password, user.password);
                 if (passwordMatch) {
@@ -31,10 +31,10 @@ userRouter.post("/login", async (req, res) => {
 
 // User Sign Up
 userRouter.post("/signup", async (req, res) => {
-    const { fullName, password, email } = req.body;
+    const { userName, password, email } = req.body;
 
     try {
-        const existingUserByName = await User.findOne({ fullName });
+        const existingUserByName = await User.findOne({ userName });
         const existingUserByEmail = await User.findOne({ email });
         // Basic email format validation using regex
         const emailFormatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -51,7 +51,7 @@ userRouter.post("/signup", async (req, res) => {
                 return res.status(400).json({ error: "Password must be at least 8 characters long" });
             }
             const newUser = {
-                fullName,
+                userName,
                 password,
                 email,
             };
@@ -72,7 +72,7 @@ userRouter.put("/editUser", async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ fullName: username });
+        const user = await User.findOne({ userName: username });
 
         if (!user) {
             return res.status(404).json({ error: "User not found" });

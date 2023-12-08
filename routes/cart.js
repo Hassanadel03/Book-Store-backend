@@ -5,11 +5,11 @@ const User = require("../models/user.model");
 // Add a book to the user's cart
 Cartrouter.post('/add-to-cart/:bookName', async (req, res) => {
   const { bookName } = req.params;
-  const fullName = req.body.fullName
+  const userName = req.body.userName
 
   try {
     // Find the user by some identifier (e.g., user ID from authentication)
-    const user = await User.findOne({ fullName });
+    const user = await User.findOne({ userName });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -30,10 +30,10 @@ Cartrouter.post('/add-to-cart/:bookName', async (req, res) => {
 
 // Get the user's cart
 Cartrouter.get('/get-cart', async (req, res) => {
-  const fullName = req.body.fullName
+  const userName = req.body.userName
 
   try {
-    const user = await User.findOne({ fullName });
+    const user = await User.findOne({ userName });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -51,10 +51,10 @@ Cartrouter.get('/get-cart', async (req, res) => {
 
 Cartrouter.delete('/remove-from-cart/:bookname', async (req, res) => {
   const { bookname } = req.params;
-  const fullName = req.body.fullName;
+  const userName = req.body.userName;
 
   try {
-    const user = await User.findOne({ fullName });
+    const user = await User.findOne({ userName });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

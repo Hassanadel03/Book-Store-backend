@@ -20,7 +20,7 @@ app.use("/", userRoutes);
 app.use("/", bookRoutes);
 
 //use cart routes
-app.use("/cart", cartRoutes);
+app.use("/", cartRoutes);
 
 mongoose.set("strictQuery", false);
 mongoose
